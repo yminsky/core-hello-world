@@ -6,20 +6,20 @@ to get started building OCaml projects using OPAM, Core and
 OCamlbuild.  To use this, first get OPAM, and install the "core"
 package.  Also, it's probably doing this:
 
-    opam switch ocaml-4.00.1+short-types
+    $ opam switch ocaml-4.00.1+short-types
 
 to get better error messages from the compiler when using Core.  (As
 of 4.01, this compiler variant should be obsolete.)
 
 You can build the project by running:
 
-    ./build.sh hello_world.native
+    $ ./build.sh hello_world.native
 
 and you can then use it as follows:
 
     core-hello-world $ ./hello_world.native
     Hello World!
-    core-hello-world $ ./hello_world.native -h
+    core-hello-world $ ./hello_world.native -help
     Hello World
 
       hello_world.native
@@ -33,7 +33,6 @@ and you can then use it as follows:
       [-help]        print this help text and exit
                      (alias: -?)
 
-    flag -h is an ambiguous prefix: -hello, -help
     core-hello-world $ ./hello_world.native -hello "Goodbye" -world "Yellow Brick Road"
     Goodbye Yellow Brick Road!
 
