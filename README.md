@@ -22,7 +22,7 @@ and you can then use it as follows:
     core-hello-world $ ./hello_world.native -h
     Hello World
 
-      hello_world.native 
+      hello_world.native
 
     === flags ===
 
@@ -37,3 +37,14 @@ and you can then use it as follows:
     core-hello-world $ ./hello_world.native -hello "Goodbye" -world "Yellow Brick Road"
     Goodbye Yellow Brick Road!
 
+There's also a file called dot_ocamlinit, which will auto-load Core
+for you in the toplevel, if you do this:
+
+    $ cp dot_ocamlinit ~/.ocamlinit
+
+If you want to use the toplevel, you might want to try installing
+rlwrap to give you command-line editing, at which point you can run:
+
+    $ rlwrap ocaml
+
+and start using Core in the OCaml toplevel.
