@@ -1,6 +1,6 @@
 open Core.Std
 open Async.Std
-open Protocol
+open Broker_protocol
 
 (* First, we build the implementations *)
 

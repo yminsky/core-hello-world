@@ -1,6 +1,6 @@
 open Core.Std
 open Async.Std
-open Protocol
+open Broker_protocol
 
 (* A publisher for a single topic *)
 module Topic_pub : sig
