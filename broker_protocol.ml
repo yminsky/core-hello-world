@@ -10,7 +10,16 @@ module Message = struct
              from: Username.t;
              time: Time.t;
            }
-  with sexp, bin_io
+  with sexp, bin_io, compare
+end
+
+module Dump = struct
+  type single = { topic : Topic.t;
+                  message : Message.t;
+                  num_subscribers: int;
+                }
+  with sexp,bin_io, compare
+  type t = single list with sexp,bin_io, compare
 end
 
 let publish_rpc = Rpc.Rpc.create
@@ -25,14 +34,6 @@ let subscribe_rpc = Rpc.Pipe_rpc.create
   ~bin_query:Topic.bin_t
   ~bin_response:Message.bin_t
   ~bin_error:String.bin_t
-
-module Dump = struct
-  type single = { topic : Topic.t;
-                  message : Message.t;
-                  num_subscribers: int; }
-  with sexp,bin_io
-  type t = single list with sexp,bin_io
-end
 
 let dump_rpc = Rpc.Rpc.create
   ~name:"dump"
