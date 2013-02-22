@@ -24,7 +24,7 @@ let with_rpc_conn f ~host ~port =
       | Ok conn -> f conn
     )
 
-let start_server ~env ~implementations ~port =
+let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
   let implementations =
     Rpc.Implementations.create ~on_unknown_rpc:`Ignore ~implementations
   in
@@ -41,5 +41,7 @@ let start_server ~env ~implementations ~port =
           ~implementations
       )
     >>= fun server ->
-    Tcp.Server.close_finished server
+    Deferred.any
+      [ (stop >>= fun () -> Tcp.Server.close server)
+      ; Tcp.Server.close_finished server ]
 

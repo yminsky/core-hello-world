@@ -4,10 +4,10 @@ open Broker_protocol
 
 (* First, we build the implementations *)
 
-let publish_impl dir msg =
+let publish_impl (dir,_) msg =
   return (Directory.publish dir msg)
 
-let subscribe_impl dir topic ~aborted =
+let subscribe_impl (dir,_) topic ~aborted =
   return (
     match Directory.subscribe dir topic with
     | None -> Error "Unknown topic"
@@ -16,11 +16,11 @@ let subscribe_impl dir topic ~aborted =
       Ok pipe
   )
 
-let dump_impl dir () =
+let dump_impl (dir,_) () =
   return (Directory.dump dir)
 
-let shutdown_impl _dir () =
-  (after (sec 0.1) >>> fun () -> shutdown 0);
+let shutdown_impl (_,stop) () =
+  Ivar.fill_if_empty stop ();
   return ()
 
 let implementations =
@@ -34,8 +34,15 @@ let command = Command.async_basic
   ~summary:"Start the message broker server"
   Command.Spec.(empty +> Common.port_arg ())
   (fun port () ->
+    let stop = Ivar.create () in
     let directory = Directory.create () in
-    Common.start_server ~port ~implementations ~env:directory)
+    Common.start_server ()
+      ~stop:(Ivar.read stop)
+      ~port
+      ~implementations
+      ~env:(directory,stop)
+  )
+
 
 let () =
   Exn.handle_uncaught ~exit:true (fun () -> Command.run command)
