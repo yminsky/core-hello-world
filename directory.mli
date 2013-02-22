@@ -2,7 +2,7 @@ open Core.Std
 (** A directory for storing last-values for a basic pub/sub system *)
 
 open Async.Std
-open Protocol
+open Broker_protocol
 
 type t
 

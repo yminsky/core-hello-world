@@ -1,6 +1,6 @@
 open Core.Std
 open Async.Std
-open Protocol
+open Broker_protocol
 
 let shell cmd args =
   In_thread.run (fun () ->
