@@ -42,7 +42,9 @@ let shutdown =
     Rpc.Rpc.dispatch shutdown_rpc conn ()
     >>= function
     | Ok  () -> return ()
-    | Error exn -> eprintf "failed!\n"; return ()
+    | Error err ->
+      eprintf "failed!\n%s\n" (Error.to_string_hum err);
+      return ()
   )
 
 let shutdown_cmd =
