@@ -11,11 +11,21 @@ package.  Also, it's probably doing this:
 to get better error messages from the compiler when using Core.  (As
 of 4.01, this compiler variant should be obsolete.)
 
-You can build the project by running:
+You can build all the pieces of this project by running:
+
+    $ ./build_all.sh
+
+Or you can build any individual executable by running
 
     $ ./build.sh hello_world.native
 
-and you can then use it as follows:
+There are three basic examples
+
+Hello World
+-----------
+
+This executable is `hello_world.native` (or `hello_world.byte`), and
+here's an example of it in action.
 
     core-hello-world $ ./hello_world.native
     Hello World!
@@ -35,6 +45,28 @@ and you can then use it as follows:
 
     core-hello-world $ ./hello_world.native -hello "Goodbye" -world "Yellow Brick Road"
     Goodbye Yellow Brick Road!
+
+
+Hello World client/server
+-------------------------
+
+The next example is a pair of programs: `hello_server.native` and
+`hello_client.native`.  The server will accept requests via the
+`Async.Rpc` library, and the client dispatches them.  The RPC is
+trivial: the client sends a string, and the server attaches " World!"
+to the end of it and sends the result back.
+
+Message Broker
+--------------
+
+This is the most complicated example.  `broker_server.native` is a
+simple message broker that allows you to publish and subscribe to
+streams of data.  `broker_client.native` is a client that lets you do
+a few operations, including publishing, subscribing, getting a dump of
+the current state of the server, and shutting the server down.
+
+Setting up the toplevel
+-----------------------
 
 There's also a file called dot_ocamlinit, which will auto-load Core
 for you in the toplevel, if you do this:
