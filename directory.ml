@@ -51,18 +51,7 @@ let publish t message =
   Topic_pub.publish s message
 
 let subscribe t topic =
-  match Hashtbl.find t topic with
-  | None -> None
-  | Some s -> Some (Topic_pub.subscribe s)
-
-let subscribe t topic =
   Option.map (Hashtbl.find t topic) ~f:Topic_pub.subscribe
-
-let subscribe t topic =
-  let open Option.Monad_infix in
-  Hashtbl.find t topic
-  >>| fun s ->
-  Topic_pub.subscribe s
 
 let dump t =
   Hashtbl.to_alist t

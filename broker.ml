@@ -32,9 +32,9 @@ let implementations =
   ]
 
 let start_server () =
-  let server =
+  let implementations =
     match
-      Rpc.Server.create
+      Rpc.Implementations.create
         ~implementations
         ~on_unknown_rpc:`Ignore
     with
@@ -48,7 +48,7 @@ let start_server () =
       Rpc.Connection.server_with_close r w
         ~connection_state:directory
         ~on_handshake_error:`Ignore
-        ~server
+        ~implementations
     )
   >>= fun server ->
   Tcp.Server.close_finished server
