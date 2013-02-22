@@ -11,10 +11,12 @@ let hello_impl () hello =
   Clock.after (sec 0.1)
   >>= fun () -> return (hello ^ " World!")
 
-(* The list of RPC implementations supported by this server  *)
+(* The list of RPC implementations supported by this server *)
 let implementations =
   [ Rpc.Rpc.implement Hello_protocol.hello_rpc hello_impl ]
 
+(* The command-line interface.  We use [async_basic] so that the command starts
+   the async scheduler, and exits when the server stops.  *)
 let command =
   Command.async_basic
     ~summary:"Hello World server"
@@ -23,6 +25,6 @@ let command =
       +> flag "-port" (optional_with_default 8012 int)
         ~doc:" server port"
     )
-    (fun port () -> Common.start_server ~env:() ~port ~implementations)
+    (fun port () -> Common.start_server ~env:() ~port ~implementations ())
 
 let () = Command.run command

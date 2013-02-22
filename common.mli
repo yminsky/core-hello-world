@@ -10,6 +10,8 @@ val with_rpc_conn
 
 val start_server
   :  env:'a
+  -> ?stop : unit Deferred.t
   -> implementations:'a Rpc.Implementation.t list
   -> port:int
+  -> unit
   -> unit Deferred.t
