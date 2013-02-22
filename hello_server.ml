@@ -1,30 +1,19 @@
 open Core.Std
 open Async.Std
 
+(* The implementation of the "hello" RPC.  The first argument is the environment
+   the query executes against, which in this case is trivial.
+
+   The RPC waits a 10th of a second before responding just to show how you do a
+   query whose implementation blocks.
+*)
 let hello_impl () hello =
   Clock.after (sec 0.1)
   >>= fun () -> return (hello ^ " World!")
 
+(* The list of RPC implementations supported by this server  *)
 let implementations =
   [ Rpc.Rpc.implement Hello_protocol.hello_rpc hello_impl ]
-
-let start_server ~port =
-  let implementations =
-    match Rpc.Implementations.create ~implementations ~on_unknown_rpc:`Ignore with
-    | Ok x -> x
-    | Error (`Duplicate_implementations _) -> assert false
-  in
-  Tcp.Server.create
-    ~on_handler_error:`Ignore
-    (Tcp.on_port port)
-    (fun _addr r w ->
-      Rpc.Connection.server_with_close r w
-        ~connection_state:()
-        ~on_handshake_error:`Ignore
-        ~implementations
-    )
-  >>= fun server ->
-  Tcp.Server.close_finished server
 
 let command =
   Command.async_basic
@@ -34,6 +23,6 @@ let command =
       +> flag "-port" (optional_with_default 8012 int)
         ~doc:" server port"
     )
-    (fun port () -> start_server ~port)
+    (fun port () -> Common.start_server ~env:() ~port ~implementations)
 
 let () = Command.run command
