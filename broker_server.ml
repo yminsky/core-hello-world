@@ -23,7 +23,6 @@ let dump_impl dir () =
 
 let shutdown_impl _dir () =
   (after (sec 0.1) >>> fun () -> shutdown 0);
-  shutdown 0;
   return ()
 
 let implementations =
