@@ -1,6 +1,7 @@
 open Core.Std
 open Async.Std
 open Broker_protocol
+module Ascii_table = Core_extended.Std.Ascii_table
 
 let shell cmd args =
   In_thread.run (fun () ->
@@ -78,19 +79,41 @@ let sub_cmd = Command.async_basic
   (fun host port topic () -> subscribe ~host ~port ~topic)
 
 
-let dump =
+let sexp_print_dump dump =
+  printf "%s\n"
+    (Dump.sexp_of_t dump |! Sexp.to_string_hum)
+
+let col = Ascii_table.Column.create
+let columns =
+  [ col "topic" (fun d -> Topic.to_string d.Dump.topic)
+  ; col "text"  (fun d -> d.Dump.message.Message.text) ~max_width:25
+  ; col "#sub"  (fun d-> Int.to_string d.Dump.num_subscribers)
+  ; col "time"  (fun d -> Time.to_sec_string d.Dump.message.Message.time)
+  ]
+
+let table_print_dump dump =
+  printf "%s\n%!"
+    (Ascii_table.to_string
+       ~display:Ascii_table.Display.line
+       ~limit_width_to:72
+       columns dump)
+
+let dump ~sexp =
   Common.with_rpc_conn (fun conn ->
     Rpc.Rpc.dispatch_exn dump_rpc conn ()
     >>= fun dump ->
-    printf "%s\n"
-      (Dump.sexp_of_t dump |! Sexp.to_string_hum);
+    (if sexp then sexp_print_dump dump else table_print_dump dump);
     return ()
   )
 
-let dump_cmd = Command.async_basic
-  ~summary:"Get a full dump of the broker's state"
-  (host_and_port ())
-  (fun host port () -> dump ~host ~port)
+let dump_cmd =
+  Command.async_basic
+    ~summary:"Get a full dump of the broker's state"
+    Command.Spec.(
+      host_and_port ()
+      +> flag "-sexp" no_arg ~doc:" Show as raw s-expression"
+    )
+    (fun host port sexp () -> dump ~host ~port ~sexp)
 
 let () =
   Exn.handle_uncaught ~exit:true (fun () ->
