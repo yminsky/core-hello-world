@@ -17,10 +17,8 @@ let command =
     ~summary:"Hello World client"
     Command.Spec.(
       empty
-      +> flag "-port" (optional_with_default 8012 int)
-        ~doc:" server port"
-      +> flag "-host" (optional_with_default "localhost" string)
-        ~doc:" server host"
+      +> Common.port_arg ()
+      +> Common.host_arg ()
     )
     (fun port host () ->
       say_hello port host

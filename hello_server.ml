@@ -21,9 +21,7 @@ let command =
   Command.async_basic
     ~summary:"Hello World server"
     Command.Spec.(
-      empty
-      +> flag "-port" (optional_with_default 8012 int)
-        ~doc:" server port"
+      empty +> Common.port_arg ()
     )
     (fun port () -> Common.start_server ~env:() ~port ~implementations ())
 
