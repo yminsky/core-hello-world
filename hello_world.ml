@@ -19,11 +19,6 @@ let command =
     )
     (* The command-line spec determines the argument to this function, which
        show up in an order that matches the spec. *)
-    (fun hello world () ->
-      printf "%s %s!\n" hello world
-    )
+    (fun hello world () -> printf "%s %s!\n" hello world)
 
-let () =
-  (* Exn.handle_uncaught is here to improve how exceptions are printed out when
-     the program exits. *)
-  Exn.handle_uncaught ~exit:true (fun () -> Command.run command)
+let () = Command.run command

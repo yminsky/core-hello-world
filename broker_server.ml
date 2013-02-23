@@ -48,7 +48,5 @@ let command = Command.async_basic
       ~env:(directory,stop)
   )
 
-
-let () =
-  Exn.handle_uncaught ~exit:true (fun () -> Command.run command)
+let () = Command.run command
 
