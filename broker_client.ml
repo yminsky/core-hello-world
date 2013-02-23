@@ -40,7 +40,7 @@ let pub_cmd = Command.async_basic
   Command.Spec.(
     (host_and_port ())
     +> anon ("<topic>" %: Arg_type.create Topic.of_string)
-                          +> anon ("<text>" %: string)
+    +> anon ("<text>" %: string)
   )
   (fun host port topic text () -> publish ~host ~port ~topic ~text)
 
