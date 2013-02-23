@@ -14,8 +14,7 @@ module Message = struct
 end
 
 module Dump = struct
-  type single = { topic : Topic.t;
-                  message : Message.t;
+  type single = { message : Message.t;
                   num_subscribers: int;
                 }
   with sexp,bin_io, compare

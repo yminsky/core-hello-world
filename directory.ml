@@ -54,8 +54,8 @@ let subscribe t topic =
   Option.map (Hashtbl.find t topic) ~f:Topic_pub.subscribe
 
 let dump t =
-  Hashtbl.to_alist t
-  |> List.map ~f:(fun (topic,tpub) ->
+  Hashtbl.data t
+  |> List.map ~f:(fun tpub ->
     let num_subscribers = Topic_pub.num_subscribers tpub in
     let message = Topic_pub.last_message tpub in
-    {Dump. topic; num_subscribers; message })
+    {Dump. num_subscribers; message })
