@@ -73,9 +73,13 @@ These are listed in rough dependency order.
 * `hello_world.ml`: Command-line tool that prints "Hello World!"
 * `common.ml`: Some common utilities for setting up Async-RPC clients
   and servers
+* `hello_protocol.ml`: Async-RPC protocol for communicating between
+  the hello client and server.
 * `hello_server.ml`: Async-RPC server for answering "hello" query
 * `hello_client.ml`: Async-RPC client fro sending "hello" query
 * `directory.ml`: Core datastructur of the Async message broker
+* `broker_protocol.ml`: Async-RPC protocol for communicating between
+  the broker client and server.
 * `broker_server.ml`: Async-RPC server that handles message broker
   requests.  Backed by the Directory.
 * `broker_client.ml`: Async-RPC client that can publish, subscribe,
