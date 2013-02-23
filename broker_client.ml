@@ -72,7 +72,6 @@ let sub_cmd = Command.async_basic
   )
   (fun host port topic () -> subscribe ~host ~port ~topic)
 
-
 let sexp_print_dump dump =
   printf "%s\n"
     (Dump.sexp_of_t dump |! Sexp.to_string_hum)
