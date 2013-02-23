@@ -24,7 +24,6 @@ let shutdown_cmd =
     ~summary:"Shut the broker down"
     (fun host port () -> shutdown ~host ~port)
 
-
 let publish ~topic ~text =
   Common.with_rpc_conn (fun conn ->
     shell "whoami" []
