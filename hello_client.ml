@@ -1,15 +1,12 @@
 open Core.Std
 open Async.Std
 
-let say_hello port host =
-  Common.with_rpc_conn ~port ~host (fun conn ->
-    Rpc.Rpc.dispatch Hello_protocol.hello_rpc conn "Hello"
-    >>= function
-    | Ok response -> printf "%s\n%!" response; return ()
-    | Error err ->
-      eprintf "An error occurred:\n%s\n%!"
-        (Error.to_string_hum err);
-      return ()
+(* A command that sends the hello request  *)
+let say_hello =
+  Common.with_rpc_conn (fun conn ->
+    Rpc.Rpc.dispatch_exn Hello_protocol.hello_rpc conn "Hello"
+    >>| fun response ->
+    printf "%s\n%!" response
   )
 
 let command =
@@ -20,8 +17,6 @@ let command =
       +> Common.port_arg ()
       +> Common.host_arg ()
     )
-    (fun port host () ->
-      say_hello port host
-    )
+    (fun port host () -> say_hello ~port ~host)
 
 let () = Command.run command

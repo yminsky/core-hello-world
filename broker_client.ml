@@ -10,13 +10,7 @@ let shell cmd args =
 
 let shutdown =
   Common.with_rpc_conn (fun conn ->
-    Rpc.Rpc.dispatch shutdown_rpc conn ()
-    >>= function
-    | Ok  () -> return ()
-    | Error err ->
-      eprintf "failed!\n%s\n" (Error.to_string_hum err);
-      return ()
-  )
+    Rpc.Rpc.dispatch_exn shutdown_rpc conn ())
 
 let host_and_port () =
   Command.Spec.(
