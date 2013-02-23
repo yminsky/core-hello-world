@@ -65,6 +65,24 @@ streams of data.  `broker_client.native` is a client that lets you do
 a few operations, including publishing, subscribing, getting a dump of
 the current state of the server, and shutting the server down.
 
+Guide to the files
+------------------
+
+These are listed in rough dependency order.
+
+* `build.sh`: For building any target
+* `build_all.sh`: builds _all_ the executable targets
+* `hello_world.ml`: Command-line tool that prints "Hello World!"
+* `common.ml`: Some common utilities for setting up Async-RPC clients
+  and servers
+* `hello_server.ml`: Async-RPC server for answering "hello" query
+* `hello_client.ml`: Async-RPC client fro sending "hello" query
+* `directory.ml`: Core datastructur of the Async message broker
+* `broker_server.ml`: Async-RPC server that handles message broker
+  requests.  Backed by the Directory.
+* `broker_client.ml`: Async-RPC client that can publish, subscribe,
+  get a dump of the state of the broker, and shut the broker down.
+
 Setting up the toplevel
 -----------------------
 
