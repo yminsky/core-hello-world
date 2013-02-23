@@ -70,8 +70,6 @@ Guide to the files
 
 These are listed in rough dependency order.
 
-* `build.sh`: For building any target
-* `build_all.sh`: builds _all_ the executable targets
 * `hello_world.ml`: Command-line tool that prints "Hello World!"
 * `common.ml`: Some common utilities for setting up Async-RPC clients
   and servers
@@ -82,6 +80,14 @@ These are listed in rough dependency order.
   requests.  Backed by the Directory.
 * `broker_client.ml`: Async-RPC client that can publish, subscribe,
   get a dump of the state of the broker, and shut the broker down.
+
+Plus, the build scripts:
+
+* `_tags`: which sets up the build options for `ocamlbuild`.
+* `build.sh`: For building any target, invoking `ocamlbuild`.
+* `build_all.sh`: builds _all_ the executable targets.  Calls out to
+  `build.sh`.
+
 
 Setting up the toplevel
 -----------------------
