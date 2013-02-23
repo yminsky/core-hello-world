@@ -9,7 +9,8 @@ type t
 (** Creates an empty directory *)
 val create : unit -> t
 
-val publish   : t -> Message.t -> unit
+(** Publish a new message *)
+val publish : t -> Message.t -> unit
 
 (** If the topic is unknown, then None is returned *)
 val subscribe : t -> Topic.t -> Message.t Pipe.Reader.t option

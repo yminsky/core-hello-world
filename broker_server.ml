@@ -23,12 +23,17 @@ let shutdown_impl (_,stop) () =
   Ivar.fill_if_empty stop ();
   return ()
 
+(* We then create a list of all the implementations we're going to support in
+   the server. *)
+
 let implementations =
   [ Rpc.Rpc.     implement publish_rpc   publish_impl
   ; Rpc.Pipe_rpc.implement subscribe_rpc subscribe_impl
   ; Rpc.Rpc.     implement dump_rpc      dump_impl
   ; Rpc.Rpc.     implement shutdown_rpc  shutdown_impl
   ]
+
+(* Finally we create a command for starting the broker server *)
 
 let command = Command.async_basic
   ~summary:"Start the message broker server"
