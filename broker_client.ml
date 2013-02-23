@@ -73,13 +73,13 @@ let sub_cmd = Command.async_basic
 
 let sexp_print_dump dump =
   printf "%s\n"
-    (Dump.sexp_of_t dump |! Sexp.to_string_hum)
+    (Dump.sexp_of_t dump |> Sexp.to_string_hum)
 
 let col = Ascii_table.Column.create
 let columns =
   [ col "topic" (fun d -> Topic.to_string d.Dump.message.Message.topic)
   ; col "text"  (fun d -> d.Dump.message.Message.text) ~max_width:25
-  ; col "#sub"  (fun d-> Int.to_string d.Dump.num_subscribers)
+  ; col "#sub"  (fun d -> Int.to_string d.Dump.num_subscribers)
   ; col "time"  (fun d -> Time.to_sec_string d.Dump.message.Message.time)
   ]
 
@@ -116,5 +116,3 @@ let () =
          ; "dump"     , dump_cmd
          ; "shutdown" , shutdown_cmd
          ]))
-
-
