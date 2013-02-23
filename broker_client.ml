@@ -85,14 +85,14 @@ let sexp_print_dump dump =
 
 let col = Ascii_table.Column.create
 let columns =
-  [ col "topic" (fun d -> Topic.to_string d.Dump.topic)
+  [ col "topic" (fun d -> Topic.to_string d.Dump.message.Message.topic)
   ; col "text"  (fun d -> d.Dump.message.Message.text) ~max_width:25
   ; col "#sub"  (fun d-> Int.to_string d.Dump.num_subscribers)
   ; col "time"  (fun d -> Time.to_sec_string d.Dump.message.Message.time)
   ]
 
 let table_print_dump dump =
-  printf "%s\n%!"
+  printf "%s%!"
     (Ascii_table.to_string
        ~display:Ascii_table.Display.line
        ~limit_width_to:72
