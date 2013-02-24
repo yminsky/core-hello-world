@@ -108,11 +108,11 @@ let dump_cmd =
     (fun host port sexp () -> dump ~host ~port ~sexp)
 
 let () =
-  Exn.handle_uncaught ~exit:true (fun () ->
-    Command.run
-      (Command.group ~summary:"Utilities for interacting with message broker"
-         [ "publish"  , pub_cmd
-         ; "subscribe", sub_cmd
-         ; "dump"     , dump_cmd
-         ; "shutdown" , shutdown_cmd
-         ]))
+  Log.Global.set_output [ Log.Output.file `Text ~filename:("client.log") ];
+  Command.run
+    (Command.group ~summary:"Utilities for interacting with message broker"
+       [ "publish"  , pub_cmd
+       ; "subscribe", sub_cmd
+       ; "dump"     , dump_cmd
+       ; "shutdown" , shutdown_cmd
+       ])

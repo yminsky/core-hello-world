@@ -5,9 +5,11 @@ open Broker_protocol
 (* First, we build the implementations *)
 
 let publish_impl (dir,_) msg =
+  Log.Global.info "Message published";
   return (Directory.publish dir msg)
 
 let subscribe_impl (dir,_) topic ~aborted =
+  Log.Global.info "Subscription started";
   return (
     match Directory.subscribe dir topic with
     | None -> Error "Unknown topic"
@@ -17,9 +19,11 @@ let subscribe_impl (dir,_) topic ~aborted =
   )
 
 let dump_impl (dir,_) () =
+  Log.Global.info "Dump requested";
   return (Directory.dump dir)
 
 let shutdown_impl (_,stop) () =
+  Log.Global.info "Shutdown requested";
   Ivar.fill_if_empty stop ();
   return ()
 
@@ -37,10 +41,32 @@ let implementations =
 
 let command = Command.async_basic
   ~summary:"Start the message broker server"
-  Command.Spec.(empty +> Common.port_arg ())
+  Command.Spec.(
+    empty
+    +> Common.port_arg ()
+  )
   (fun port () ->
+    (* We use a blocking call to get the working directory, because the Async
+       scheduler isn't running yet.
+    *)
+    let basedir = Core.Std.Unix.getcwd () in
+(*
+    let finish_daemonize =
+      unstage
+        (Daemon.daemonize_wait ()
+           ~redirect_stdout:`Do_not_redirect
+           ~redirect_stderr:`Do_not_redirect
+           ~cd:basedir)
+    in
+*)
+    Log.Global.set_output
+      [ Log.Output.file `Text ~filename:(basedir ^/ "broker.log") ];
+    return () >>= fun () ->
+(*    finish_daemonize ();*)
+    Log.Global.info "Starting broker";
     let stop = Ivar.create () in
     let directory = Directory.create () in
+    Log.Global.info "Starting server";
     Common.start_server ()
       ~stop:(Ivar.read stop)
       ~port
@@ -49,4 +75,3 @@ let command = Command.async_basic
   )
 
 let () = Command.run command
-
