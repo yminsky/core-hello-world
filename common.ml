@@ -14,34 +14,43 @@ let host_arg () =
   )
 
 let with_rpc_conn f ~host ~port =
+  Log.Global.info "starting RPC connection to %s:%d" host port;
   Tcp.with_connection
     (Tcp.to_host_and_port host port)
     ~timeout:(sec 1.)
     (fun r w ->
+      Log.Global.info "Connection established";
       Rpc.Connection.create r w ~connection_state:()
       >>= function
-      | Error exn -> raise exn
-      | Ok conn -> f conn
+      | Error exn ->
+        Log.Global.info "Received error";
+        raise exn
+      | Ok conn ->
+        Log.Global.info "Calling handling function";
+        f conn
     )
 
 let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
+  Log.Global.info "starting server on %d" port;
   let implementations =
     Rpc.Implementations.create ~on_unknown_rpc:`Ignore ~implementations
   in
   match implementations with
   | Error (`Duplicate_implementations _) -> assert false
   | Ok implementations ->
+    Log.Global.info "About to start TCP server";
     Tcp.Server.create
-      ~on_handler_error:`Ignore
+      ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp exn Exn.sexp_of_t))
       (Tcp.on_port port)
       (fun _addr r w ->
         Rpc.Connection.server_with_close r w
           ~connection_state:env
-          ~on_handshake_error:`Ignore
+          ~on_handshake_error:(
+            `Call (fun exn -> Log.Global.sexp exn Exn.sexp_of_t; return ()))
           ~implementations
       )
     >>= fun server ->
+    Log.Global.info "TCP server started, waiting for close";
     Deferred.any
       [ (stop >>= fun () -> Tcp.Server.close server)
       ; Tcp.Server.close_finished server ]
-
