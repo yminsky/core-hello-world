@@ -3,7 +3,7 @@ open Async.Std
 
 let port_arg () =
   Command.Spec.(
-    flag "-port" (optional_with_default 8080 int)
+    flag "-port" (optional_with_default 8124 int)
       ~doc:" Broker's port"
   )
 
@@ -33,24 +33,23 @@ let with_rpc_conn f ~host ~port =
 let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
   Log.Global.info "starting server on %d" port;
   let implementations =
-    Rpc.Implementations.create ~on_unknown_rpc:`Ignore ~implementations
+    Rpc.Implementations.create_exn ~implementations
+      ~on_unknown_rpc:(`Call (fun ~rpc_tag ~version ->
+        Log.Global.info "Unexpected RPC, tag %s, version %d" rpc_tag version))
   in
-  match implementations with
-  | Error (`Duplicate_implementations _) -> assert false
-  | Ok implementations ->
-    Log.Global.info "About to start TCP server";
-    Tcp.Server.create
-      ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp exn Exn.sexp_of_t))
-      (Tcp.on_port port)
-      (fun _addr r w ->
-        Rpc.Connection.server_with_close r w
-          ~connection_state:env
-          ~on_handshake_error:(
-            `Call (fun exn -> Log.Global.sexp exn Exn.sexp_of_t; return ()))
-          ~implementations
-      )
-    >>= fun server ->
-    Log.Global.info "TCP server started, waiting for close";
-    Deferred.any
-      [ (stop >>= fun () -> Tcp.Server.close server)
-      ; Tcp.Server.close_finished server ]
+  Log.Global.info "About to start TCP server";
+  Tcp.Server.create
+    ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp exn Exn.sexp_of_t))
+    (Tcp.on_port port)
+    (fun _addr r w ->
+      Rpc.Connection.server_with_close r w
+        ~connection_state:env
+        ~on_handshake_error:(
+          `Call (fun exn -> Log.Global.sexp exn Exn.sexp_of_t; return ()))
+        ~implementations
+    )
+  >>= fun server ->
+  Log.Global.info "TCP server started, waiting for close";
+  Deferred.any
+    [ (stop >>= fun () -> Tcp.Server.close server)
+    ; Tcp.Server.close_finished server ]
