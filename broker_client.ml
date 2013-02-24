@@ -108,7 +108,6 @@ let dump_cmd =
     (fun host port sexp () -> dump ~host ~port ~sexp)
 
 let () =
-  Log.Global.set_output [ Log.Output.file `Text ~filename:("client.log") ];
   Command.run
     (Command.group ~summary:"Utilities for interacting with message broker"
        [ "publish"  , pub_cmd
