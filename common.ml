@@ -14,20 +14,14 @@ let host_arg () =
   )
 
 let with_rpc_conn f ~host ~port =
-  Log.Global.info "starting RPC connection to %s:%d" host port;
   Tcp.with_connection
     (Tcp.to_host_and_port host port)
     ~timeout:(sec 1.)
     (fun r w ->
-      Log.Global.info "Connection established";
       Rpc.Connection.create r w ~connection_state:()
       >>= function
-      | Error exn ->
-        Log.Global.info "Received error";
-        raise exn
-      | Ok conn ->
-        Log.Global.info "Calling handling function";
-        f conn
+      | Error exn -> raise exn
+      | Ok conn   -> f conn
     )
 
 let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
