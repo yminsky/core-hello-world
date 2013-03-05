@@ -169,7 +169,7 @@ You'll then need to install the necessary libraries to use this
 example.  You can do that by typing:
 
 ```
-# opam install async core_extended
+$ opam install async core_extended
 ```
 
 When you're done here, look at the instructions in the README to see
