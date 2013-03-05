@@ -8,6 +8,7 @@ open Async.Std
    query whose implementation blocks.
 *)
 let hello_impl () hello =
+  Log.Global.info "received hello query (%s)" hello;
   Clock.after (sec 0.1)
   >>= fun () -> return (hello ^ " World!")
 

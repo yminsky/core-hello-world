@@ -1,17 +1,15 @@
-Hello World for Core
-====================
+Core and Async Hello World
+==========================
 
 A simple hello-world project for Core.  The intent is to show you how
 to get started building OCaml projects using OPAM, Core and
-OCamlbuild.  To use this, first get OPAM, and install the "core"
-package.  Also, it's probably doing this:
+OCamlbuild.
 
-    $ opam switch ocaml-4.00.1+short-types
+Before getting started with this code, you should follow the
+instructions in the PREREQUISITES.
 
-to get better error messages from the compiler when using Core.  (As
-of 4.01, this compiler variant should be obsolete.)
-
-You can build all the pieces of this project by running:
+Once that's done, you can build all the pieces of this project by
+running:
 
     $ ./build_all.sh
 
@@ -23,6 +21,9 @@ There are three basic examples
 
 Hello World
 -----------
+
+This is a very simple exercise that shows you how to make a basic
+command-line application using Core's `Command` module.
 
 This executable is `hello_world.native` (or `hello_world.byte`), and
 here's an example of it in action.

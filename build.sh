@@ -2,9 +2,6 @@
 
 eval `opam config -env`
 
-for TARGET in $*
-do
-  ocamlbuild -use-ocamlfind $TARGET -cflags "-w @A-4-33-23" -cflags -short-paths
-done
+ocamlbuild -j 4 -use-ocamlfind -cflags "-w @A-4-33-23" -cflags -short-paths $*
 
 

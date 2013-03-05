@@ -5,6 +5,8 @@ open Broker_protocol
 (* First, we build the implementations *)
 
 let publish_impl (dir,_) msg =
+  Log.Global.sexp ~level:`Debug msg
+    (Message.sexp_of_t);
   return (Directory.publish dir msg)
 
 let subscribe_impl (dir,_) topic ~aborted =

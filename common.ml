@@ -25,13 +25,12 @@ let with_rpc_conn f ~host ~port =
     )
 
 let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
-  Log.Global.info "starting server on %d" port;
+  Log.Global.info "Starting server on %d" port;
   let implementations =
     Rpc.Implementations.create_exn ~implementations
       ~on_unknown_rpc:(`Call (fun ~rpc_tag ~version ->
         Log.Global.info "Unexpected RPC, tag %s, version %d" rpc_tag version))
   in
-  Log.Global.info "About to start TCP server";
   Tcp.Server.create
     ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp exn Exn.sexp_of_t))
     (Tcp.on_port port)
@@ -43,7 +42,7 @@ let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
         ~implementations
     )
   >>= fun server ->
-  Log.Global.info "TCP server started, waiting for close";
+  Log.Global.info "Server started, waiting for close";
   Deferred.any
     [ (stop >>= fun () -> Tcp.Server.close server)
     ; Tcp.Server.close_finished server ]
