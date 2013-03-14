@@ -4,7 +4,7 @@ open Core.Std
    parsing library.  *)
 
 let command =
-  (* [Commabd.basic] is used for creating a command.  Every command takes a text
+  (* [Command.basic] is used for creating a command.  Every command takes a text
      summary and a command line spec *)
   Command.basic
     ~summary:"Hello World"
