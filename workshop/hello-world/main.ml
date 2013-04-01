@@ -43,10 +43,9 @@ let greet_cmd =
       printf "%s\n%!" (Message.to_string message))
 
 let command =
-  Command.basic
+  Command.group
     ~summary:"Greeting commands"
-    [ "greet", greet_cmd
-    ]
+    [ "greet", greet_cmd ]
 
 let () =
   (* Wrapping [Command.run] in [Exn.handle_uncaught] is necessary for
