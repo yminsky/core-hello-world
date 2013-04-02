@@ -7,5 +7,4 @@
  - Synchronous reasoning
  - Ability to sequence operations
  - Still cooperative (so one thread can block the world)
-
-
+* A basic example
