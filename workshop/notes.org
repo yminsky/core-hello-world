@@ -89,3 +89,14 @@ open_vs_include.ml
 ** "Line counts" example -- refactoring into modules
   - count-lines-2/main.ml
 * Part II: Async
+** Approaches to Concurrent Programming
+*** Two classic approaches
+ - Event-loops
+ - Threads
+*** Async
+ - Best of both
+ - Synchronous reasoning
+ - Ability to sequence operations
+ - Still cooperative (so one thread can block the world)
+
+
