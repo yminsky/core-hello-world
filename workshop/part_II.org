@@ -23,3 +23,6 @@
 ** Exercise
  - Add a new RPC for requesting the time of day (using Time.now).
 * Code walkthrough: Message Broker
+** Exercise
+ Add a disconnect operation
+
