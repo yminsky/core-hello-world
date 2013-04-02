@@ -11,7 +11,8 @@ let manifest_size manifest_filename =
       Deferred.Queue.fold lineq ~init:sum ~f:(fun sum line ->
         file_size line
         >>= fun file_size ->
-        return (sum + file_size)))
+        return (sum + file_size)
+      ))
   in
   Reader.with_file manifest_filename ~f:read_file
 ;;
