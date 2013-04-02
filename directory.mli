@@ -17,3 +17,5 @@ val subscribe : t -> Topic.t -> Message.t Pipe.Reader.t option
 
 (** Creates a dump of the current state of directory *)
 val dump : t -> Dump.t
+
+val clear_topic : t -> Topic.t -> unit
