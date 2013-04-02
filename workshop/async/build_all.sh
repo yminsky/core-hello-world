@@ -7,4 +7,5 @@ EXT=native
     time_loop.$EXT \
     manifest.$EXT \
     pipe_manifest.$EXT \
+    count_lines.$EXT \
 
