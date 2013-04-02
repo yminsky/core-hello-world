@@ -1,0 +1,11 @@
+* Approaches to Concurrent Programming
+** Two classic approaches
+ - Event-loops
+ - Threads
+** Async
+ - Best of both
+ - Synchronous reasoning
+ - Ability to sequence operations
+ - Still cooperative (so one thread can block the world)
+
+
