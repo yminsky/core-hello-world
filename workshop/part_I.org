@@ -1,0 +1,89 @@
+* Answers to questions
+** When to use ocamlbuild vs ocaml{c,opt} and .byte vs .opt
+ - ocamlc is the byte-code compiler
+   supports more platforms, ocaml debugger support, probably compiles faster?
+ - ocamlopt is the native-code compiler
+   faster code!
+ - ocamlbuild is just a tool to manage more complex builds (may
+   invoke ocamlc* multiple times under the hood)
+ - both ocamlc and ocamlopt are byte-code programs, but there are
+   native-compiled versions (ending with ".opt").
+** Difference between [open] and [include]
+open_vs_include.ml
+** Other questions?
+* Intro to Core
+** Provides lots of useful modules
+*** Data structures
+ - list
+ - map
+ - set
+ - hash table
+ - hash set
+ - doubly-linked list
+ - heap
+ - avl tree
+ - queue
+ - bag
+ - stack
+ - dequeue
+ - univ_map
+*** Time modules
+ - time
+ - timezone
+ - date
+ - weekday
+ - ofday
+ - time
+*** Error handling
+ - option
+ - result
+ - error
+ - info
+ - or_error
+ - exn
+ - with_return
+*** "Pratical stuff"
+ - unix
+ - {in,out}_channel
+ - command
+ - blang
+ - sexp
+ - bin_io
+*** Interfaces
+ - container
+ - comparable
+ - hashable
+ - stringable
+ - monad
+** Very careful about following conventions
+ - explicit error handling (different from the stdlib)
+   eg [List.hd : 'a list -> 'a] vs [Core.List.hd : 'a list -> 'a option]
+ - redefines many modules in the stdlib, with incompatible interfaces
+ - the [type t] convetion
+   each module usually defines a datatype, and operations on that
+   datatype -- within that module, the type will be called simply
+   [t].
+ - see http://janestreet.github.com/coding-standards.html
+** Understanding the .mli's
+ - best way to learn an ocaml library (if it's well written, the
+   types should tell the story)
+ - understanding interface includes (see, eg, the Map interface)
+ - opam makes mli's available, eg: ~/.opam/system/lib/core/*
+* "Hello World" example
+** Command line parsing
+ - ../hello_world.ml
+ - [open Core.Std] at the top
+ - [let () = Command.run]
+ - [Command.Spec.( ... )], [(+>)] is just an infix function
+ - a simple ocaml command-line program with the Command module
+   ../core-hello-world/hello_world.ml
+ - example: add anonymous arg "Hello World, this is _"
+ - exercise: add an optional argument to end the greeting with a "!"
+** File IO, reading s-expressions
+ - hello-world/main.ml
+ - let's make the greeting configurable
+* "Line counts" example -- file io
+ - count-lines-1/main.ml
+ - exercise: add an argument to read input from file(s) or stdin
+* "Line counts" example -- refactoring into modules
+ - count-lines-2/main.ml
