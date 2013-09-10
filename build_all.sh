@@ -2,7 +2,7 @@
 
 EXT=byte
 
-./build.sh \
+corebuild \
     hello_world.$EXT \
     hello_client.$EXT \
     hello_server.$EXT \
