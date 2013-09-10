@@ -45,3 +45,9 @@ let shutdown_rpc = Rpc.Rpc.create
   ~version:0
   ~bin_query:Unit.bin_t
   ~bin_response:Unit.bin_t
+
+let clear_rpc = Rpc.Rpc.create
+  ~name:"clear"
+  ~version:0
+  ~bin_query:Topic.bin_t
+  ~bin_response:Unit.bin_t

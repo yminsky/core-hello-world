@@ -107,6 +107,19 @@ let dump_cmd =
     )
     (fun host port sexp () -> dump ~host ~port ~sexp)
 
+let clear topic =
+  Common.with_rpc_conn (fun conn ->
+    Rpc.Rpc.dispatch_exn clear_rpc conn topic)
+
+let clear_cmd =
+  Command.async_basic
+    ~summary:"Clear out a given topic"
+    Command.Spec.(
+      host_and_port ()
+      +> anon ("<topic>" %: Arg_type.create Topic.of_string)
+    )
+    (fun host port topic () -> clear topic ~host ~port)
+
 let () =
   Command.run
     (Command.group ~summary:"Utilities for interacting with message broker"
@@ -114,4 +127,5 @@ let () =
        ; "subscribe", sub_cmd
        ; "dump"     , dump_cmd
        ; "shutdown" , shutdown_cmd
+       ; "clear"    , clear_cmd
        ])
