@@ -11,7 +11,7 @@ let count_lines () =
     printf "%3d: %s\n" count line)
 
 let count_lines_cmd =
-  Command.basic
+  Command.async_basic
     ~summary:"Count top 10 unique lines in a file"
     Command.Spec.(
       empty
