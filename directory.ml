@@ -6,11 +6,12 @@ open Broker_protocol
 module Topic_pub : sig
   type t
   val create : Message.t -> t
-  val publish : t -> Message.t -> unit
-  val subscribe : t -> Message.t Pipe.Reader.t
+
+  val publish         : t -> Message.t -> unit
+  val subscribe       : t -> Message.t Pipe.Reader.t
   val num_subscribers : t -> int
-  val last_message : t -> Message.t
-  val clear : t -> unit
+  val last_message    : t -> Message.t
+  val clear           : t -> unit
 end = struct
   type t = { mutable last_message: Message.t;
              mutable subscribers: Message.t Pipe.Writer.t list;
@@ -69,3 +70,4 @@ let dump t =
     let num_subscribers = Topic_pub.num_subscribers tpub in
     let message = Topic_pub.last_message tpub in
     {Dump. num_subscribers; message })
+

@@ -10,7 +10,9 @@ open Async.Std
 let hello_impl () hello =
   Log.Global.debug "received hello query (%s)" hello;
   Clock.after (sec 0.1)
-  >>= fun () -> return (hello ^ " World!")
+  >>= fun () ->
+(*  return (String.length hello) *)
+  return (hello ^ " World!")
 
 (* The list of RPC implementations supported by this server *)
 let implementations =

@@ -2,12 +2,13 @@ open Core.Std
 open Async.Std
 
 (* A command that sends the hello request  *)
-let say_hello =
+let say_hello ~host ~port =
   Common.with_rpc_conn (fun conn ->
     Rpc.Rpc.dispatch_exn Hello_protocol.hello_rpc conn "Hello"
     >>| fun response ->
     printf "%s\n%!" response
   )
+    ~host ~port
 
 let command =
   Command.async_basic
