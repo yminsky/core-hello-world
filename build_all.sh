@@ -2,7 +2,7 @@
 
 EXT=byte
 
-corebuild \
+corebuild -j 3  \
     hello_world.$EXT \
     hello_client.$EXT \
     hello_server.$EXT \
