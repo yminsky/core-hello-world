@@ -1,11 +1,9 @@
 #use "topfind"
 #thread
 #camlp4o
-#require "bin_prot.syntax"
-#require "sexplib.syntax"
-#require "variantslib.syntax"
-#require "fieldslib.syntax"
-#require "core"
+#warnings "+43+6"
+#require "core.top"
+#require "core.syntax"
 #require "core_extended"
 #require "async"
 open Core.Std
