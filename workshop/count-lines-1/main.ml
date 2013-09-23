@@ -29,7 +29,6 @@ let count_lines_cmd =
 let command =
   Command.group
     ~summary:"A bunch of counting tools"
-    [ "count-lines", count_lines_cmd
-    ]
+    [ "count-lines", count_lines_cmd ]
 
 let () = Command.run command

@@ -21,5 +21,5 @@ let run () =
 ;;
 
 let () =
-  don't_wait_for (run ());
+  ignore (run () : unit Deferred.t);
   never_returns (Scheduler.go ());
