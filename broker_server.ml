@@ -44,7 +44,8 @@ let implementations =
 
 (* Finally we create a command for starting the broker server *)
 
-let command = Command.async_basic
+let command =
+  Command.async_basic
   ~summary:"Start the message broker server"
   Command.Spec.(
     empty

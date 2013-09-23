@@ -1,12 +1,7 @@
 open Core.Std
 open Async.Std
 open Broker_protocol
-module Ascii_table = Core_extended.Std.Ascii_table
-
-let shell cmd args =
-  In_thread.run (fun () ->
-    try Ok (Core_extended.Shell.run_full cmd args)
-    with exn -> Error exn)
+module Ascii_table = Textutils.Std.Ascii_table
 
 let shutdown =
   Common.with_rpc_conn (fun conn ->
@@ -26,33 +21,29 @@ let shutdown_cmd =
 
 let publish ~topic ~text =
   Common.with_rpc_conn (fun conn ->
-    shell "whoami" []
-    >>= fun username ->
-    let username = Result.ok_exn username in
-    let from = Username.of_string (String.strip username) in
+    let from =
+      Option.value_exn (Sys.getenv "USER") ~message:"Unknown username"
+      |> String.strip
+      |> Username.of_string
+    in
     Rpc.Rpc.dispatch_exn publish_rpc conn
       { Message.
         text; topic; from; time = Time.now () }
   )
 
-let pub_cmd = Command.async_basic
-  ~summary:"publish a single value"
-  Command.Spec.(
-    (host_and_port ())
-    +> anon ("<topic>" %: Arg_type.create Topic.of_string)
-    +> anon ("<text>" %: string)
-  )
-  (fun host port topic text () -> publish ~host ~port ~topic ~text)
+let pub_cmd =
+  Command.async_basic
+    ~summary:"publish a single value"
+    Command.Spec.(
+      (host_and_port ())
+      +> anon ("<topic>" %: Arg_type.create Topic.of_string)
+      +> anon ("<text>" %: string)
+    )
+    (fun host port topic text () -> publish ~host ~port ~topic ~text)
 
 let subscribe ~topic =
   Common.with_rpc_conn (fun conn ->
-    shell "clear" []
-    >>= fun clear_string ->
-    let clear_string =
-      (* if we're not on a terminal, just use the empty string *)
-      match clear_string with
-      | Ok s -> s | Error _ -> ""
-    in
+    let clear_string = "\027[H\027[2J" in
     Rpc.Pipe_rpc.dispatch subscribe_rpc conn topic
     >>= function
     | Error err -> Error.raise err
@@ -63,13 +54,14 @@ let subscribe ~topic =
         return ()
       ))
 
-let sub_cmd = Command.async_basic
-  ~summary:"subscribe to a topic"
-  Command.Spec.(
-    host_and_port ()
-    +> anon ("<topic>" %: Arg_type.create Topic.of_string)
-  )
-  (fun host port topic () -> subscribe ~host ~port ~topic)
+let sub_cmd =
+  Command.async_basic
+    ~summary:"subscribe to a topic"
+    Command.Spec.(
+      host_and_port ()
+      +> anon ("<topic>" %: Arg_type.create Topic.of_string)
+    )
+    (fun host port topic () -> subscribe ~host ~port ~topic)
 
 let sexp_print_dump dump =
   printf "%s\n"
