@@ -3,10 +3,6 @@ open Async.Std
 open Broker_protocol
 module Ascii_table = Textutils.Std.Ascii_table
 
-let shutdown =
-  Common.with_rpc_conn (fun conn ->
-    Rpc.Rpc.dispatch_exn shutdown_rpc conn ())
-
 let host_and_port () =
   Command.Spec.(
     empty
@@ -14,10 +10,18 @@ let host_and_port () =
     +> Common.port_arg ()
   )
 
+(* Shutdown command *****************************************)
+
+let shutdown =
+  Common.with_rpc_conn (fun conn ->
+    Rpc.Rpc.dispatch_exn shutdown_rpc conn ())
+
 let shutdown_cmd =
   Command.async_basic (host_and_port ())
     ~summary:"Shut the broker down"
     (fun host port () -> shutdown ~host ~port)
+
+(* Publish command ******************************************)
 
 let publish ~topic ~text =
   Common.with_rpc_conn (fun conn ->
@@ -41,6 +45,8 @@ let pub_cmd =
     )
     (fun host port topic text () -> publish ~host ~port ~topic ~text)
 
+(* Subscribe command ****************************************)
+
 let subscribe ~topic =
   Common.with_rpc_conn (fun conn ->
     let clear_string = "\027[H\027[2J" in
@@ -62,6 +68,8 @@ let sub_cmd =
       +> anon ("<topic>" %: Arg_type.create Topic.of_string)
     )
     (fun host port topic () -> subscribe ~host ~port ~topic)
+
+(* Dump command *********************************************)
 
 let sexp_print_dump dump =
   printf "%s\n"
@@ -99,6 +107,8 @@ let dump_cmd =
     )
     (fun host port sexp () -> dump ~host ~port ~sexp)
 
+(* Clear command ********************************************)
+
 let clear topic =
   Common.with_rpc_conn (fun conn ->
     Rpc.Rpc.dispatch_exn clear_rpc conn topic)
@@ -111,6 +121,9 @@ let clear_cmd =
       +> anon ("<topic>" %: Arg_type.create Topic.of_string)
     )
     (fun host port topic () -> clear topic ~host ~port)
+
+(* Execution of final command *******************************)
+
 
 let () =
   Command.run
