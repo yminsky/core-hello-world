@@ -12,7 +12,6 @@
 ** Deferred
 ** Pipe
 ** Monitor
-
 * Simple Examples
  - interactive
  - [[file:async/manifest.ml][file:async/manifest.ml]]
