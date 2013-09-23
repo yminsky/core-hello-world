@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-EXT=byte
+EXT=native
 
-corebuild -j 3  \
+corebuild -j 4  \
     hello_world.$EXT \
     hello_client.$EXT \
     hello_server.$EXT \
