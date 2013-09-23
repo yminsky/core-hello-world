@@ -2,7 +2,9 @@
 
 EXT=native
 
-corebuild -j 4  \
+corebuild \
+    -j 4 \
+    -pkg async,textutils  \
     hello_world.$EXT \
     hello_client.$EXT \
     hello_server.$EXT \
