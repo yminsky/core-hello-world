@@ -1,6 +1,7 @@
 syntax: glob
 
 _build
+.merlin
 *.cmo
 *.native
 *.byte
