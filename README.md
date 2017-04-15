@@ -118,14 +118,17 @@ Plus, the build scripts:
 Setting up the toplevel
 -----------------------
 
-There's also a file called dot_ocamlinit, which will auto-load Core
-for you in the toplevel, if you do this:
+You can use the built-in OCaml toplevel, `ocaml`, but you're probably
+better off using `utop`, which you can install via opam:
+
+    $ opam install utop
+
+There's also a file called dot_ocamlinit, which will auto-load core
+and async, if you do this:
 
     $ cp dot_ocamlinit ~/.ocamlinit
 
-If you want to use the toplevel, you might want to try installing
-rlwrap to give you command-line editing, at which point you can run:
+And now you can start the toplevel.
 
-    $ rlwrap ocaml
+    $ utop
 
-and start using Core in the OCaml toplevel.
