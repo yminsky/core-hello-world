@@ -52,8 +52,7 @@ let pub_cmd =
 let subscribe ~topic =
   Common.with_rpc_conn (fun conn ->
     let clear_string = "\027[H\027[2J" in
-    Rpc.Pipe_rpc.dispatch subscribe_rpc conn topic
-    >>= function
+    match%bind Rpc.Pipe_rpc.dispatch subscribe_rpc conn topic with
     | Error err -> Error.raise err
     | Ok (Error s) -> eprintf "subscribe failed: %s\n" s; return ()
     | Ok (Ok (pipe,_id)) ->
@@ -95,10 +94,9 @@ let table_print_dump dump =
 
 let dump ~sexp =
   Common.with_rpc_conn (fun conn ->
-    Rpc.Rpc.dispatch_exn dump_rpc conn ()
-    >>= fun dump ->
-    (if sexp then sexp_print_dump dump else table_print_dump dump);
-    return ()
+      let%bind dump = Rpc.Rpc.dispatch_exn dump_rpc conn () in
+      (if sexp then sexp_print_dump dump else table_print_dump dump);
+      return ()
   )
 
 let dump_cmd =

@@ -9,8 +9,7 @@ open Async
 *)
 let hello_impl () hello =
   Log.Global.debug "received hello query (%s)" hello;
-  Clock.after (sec 0.1)
-  >>= fun () ->
+  let%bind () = Clock.after (sec 0.1) in
   return (hello ^ " World!")
 
 (* The list of RPC implementations supported by this server *)

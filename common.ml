@@ -18,10 +18,9 @@ let with_rpc_conn f ~host ~port =
     (Tcp.to_host_and_port host port)
     ~timeout:(sec 1.)
     (fun _ r w ->
-      Rpc.Connection.create r w ~connection_state:(fun _ -> ())
-      >>= function
-      | Error exn -> raise exn
-      | Ok conn   -> f conn
+       match%bind Rpc.Connection.create r w ~connection_state:(fun _ -> ()) with
+       | Error exn -> raise exn
+       | Ok conn   -> f conn
     )
 
 let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
@@ -33,17 +32,18 @@ let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
           `Continue
         ))
   in
-  Tcp.Server.create
-    ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp [%sexp (exn : Exn.t)]))
-    (Tcp.on_port port)
-    (fun _addr r w ->
-      Rpc.Connection.server_with_close r w
-        ~connection_state:(fun _ -> env)
-        ~on_handshake_error:(
-          `Call (fun exn -> Log.Global.sexp [%sexp (exn : Exn.t)]; return ()))
-        ~implementations
-    )
-  >>= fun server ->
+  let%bind server = 
+    Tcp.Server.create
+      ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp [%sexp (exn : Exn.t)]))
+      (Tcp.on_port port)
+      (fun _addr r w ->
+         Rpc.Connection.server_with_close r w
+           ~connection_state:(fun _ -> env)
+           ~on_handshake_error:(
+             `Call (fun exn -> Log.Global.sexp [%sexp (exn : Exn.t)]; return ()))
+           ~implementations
+      )
+  in
   Log.Global.info "Server started, waiting for close";
   Deferred.any
     [ (stop >>= fun () -> Tcp.Server.close server)

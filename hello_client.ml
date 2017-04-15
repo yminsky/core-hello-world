@@ -4,11 +4,9 @@ open! Async
 (* A command that sends the hello request  *)
 let say_hello ~host ~port =
   Common.with_rpc_conn (fun conn ->
-    Rpc.Rpc.dispatch_exn Hello_protocol.hello_rpc conn "Hello"
-    >>| fun response ->
-    printf "%s\n%!" response
-  )
-  ~host ~port
+      let%map response = Rpc.Rpc.dispatch_exn Hello_protocol.hello_rpc conn "Hello" in
+      printf "%s\n%!" response)
+    ~host ~port
 
 let command =
   Command.async
