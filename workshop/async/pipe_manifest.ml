@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 let file_size filename =
   Reader.file_contents filename >>| String.length
@@ -8,11 +8,10 @@ let manifest_size manifest_filename =
   let read_file manifest_file =
     let lines = Reader.lines manifest_file in
     Pipe.fold' lines ~init:0 ~f:(fun sum lineq ->
-      Deferred.Queue.fold lineq ~init:sum ~f:(fun sum line ->
-        file_size line
-        >>= fun file_size ->
-        return (sum + file_size)
-      ))
+        Deferred.Queue.fold lineq ~init:sum ~f:(fun sum line ->
+            let%bind file_size = file_size line in
+            return (sum + file_size)
+          ))
   in
   Reader.with_file manifest_filename ~f:read_file
 ;;

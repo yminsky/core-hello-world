@@ -65,12 +65,13 @@ let command =
        Log.Global.info "Starting up";
        let stop = Ivar.create () in
        let directory = Directory.create () in
-       Common.start_server ()
-         ~stop:(Ivar.read stop)
-         ~port
-         ~implementations
-         ~env:(directory,stop)
-       >>| fun () ->
+       let%map () = 
+         Common.start_server ()
+           ~stop:(Ivar.read stop)
+           ~port
+           ~implementations
+           ~env:(directory,stop)
+       in
        Log.Global.info "Shutting down"
     )
 
