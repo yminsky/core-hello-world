@@ -7,11 +7,11 @@ module Topic_pub : sig
   type t
   val create : Message.t -> t
 
-  val publish         : t -> Message.t -> unit
-  val subscribe       : t -> Message.t Pipe.Reader.t
-  val num_subscribers : t -> int
-  val last_message    : t -> Message.t
-  val clear           : t -> unit
+  val publish                : t -> Message.t -> unit
+  val subscribe              : t -> Message.t Pipe.Reader.t
+  val num_subscribers        : t -> int
+  val last_message           : t -> Message.t
+  val close_subscriber_pipes : t -> unit
 end = struct
   type t = { mutable last_message: Message.t;
              mutable subscribers: Message.t Pipe.Writer.t list;
@@ -27,7 +27,7 @@ end = struct
       List.filter t.subscribers ~f:(fun pipe ->
         not (Pipe.is_closed pipe))
 
-  let clear t =
+  let close_subscriber_pipes t =
     List.iter t.subscribers ~f:Pipe.close;
     clear_closed t
 
@@ -53,7 +53,9 @@ let create () = Topic.Table.create ()
 let clear_topic t topic =
   match Hashtbl.find t topic with
   | None -> ()
-  | Some s -> Topic_pub.clear s
+  | Some s -> 
+    Topic_pub.close_subscriber_pipes s;
+    Hashtbl.remove t topic
 
 let publish t message =
   let s =
