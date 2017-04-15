@@ -1,7 +1,8 @@
 open Async
 
-val port_arg : unit -> int    Command.Spec.param
-val host_arg : unit -> string Command.Spec.param
+val port : int Command.Param.t
+
+val host_port_pair : (string * int) Command.Param.t
 
 val with_rpc_conn
   :  (Rpc.Connection.t -> 'a Deferred.t)

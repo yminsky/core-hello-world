@@ -9,13 +9,12 @@ let say_hello ~host ~port =
     ~host ~port
 
 let command =
-  Command.async
+  Command.async'
     ~summary:"Hello World client"
-    Command.Spec.(
-      empty
-      +> Common.port_arg ()
-      +> Common.host_arg ()
-    )
-    (fun port host () -> say_hello ~port ~host)
+    Command.Let_syntax.( 
+      [%map_open
+        let (host,port) = Common.host_port_pair in
+        fun () -> say_hello ~port ~host
+      ])
 
 let () = Command.run command

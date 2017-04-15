@@ -19,11 +19,9 @@ let implementations =
 (* The command-line interface.  We use [async_basic] so that the command starts
    the async scheduler, and exits when the server stops.  *)
 let command =
-  Command.async
-    ~summary:"Hello World server"
-    Command.Spec.(
-      empty +> Common.port_arg ()
-    )
-    (fun port () -> Common.start_server ~env:() ~port ~implementations ())
+  Command.async' ~summary:"Hello World server"
+    Command.Let_syntax.(
+      let%map_open port = Common.port in
+      fun () -> Common.start_server ~env:() ~port ~implementations ())
 
 let () = Command.run command
