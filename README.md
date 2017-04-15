@@ -91,7 +91,7 @@ the current state of the server, and shutting the server down.
 Guide to the files
 ------------------
 
-These are listed in rough dependency order.
+These are files in `src` listed in rough dependency order.
 
 * `hello_world.ml`: Command-line tool that prints "Hello World!"
 * `common.ml`: Some common utilities for setting up Async-RPC clients
@@ -111,8 +111,7 @@ These are listed in rough dependency order.
 Plus, the build scripts:
 
 * `jbuild`: The Jbuilder build spec file.
-* `build_all.sh`: builds _all_ the executable targets.  Calls out to
-  `jbuilder`.
+* `build.sh`: builds all the executable targets, via `jbuilder`.
 
 
 Setting up the toplevel
