@@ -6,4 +6,4 @@
 #require "core.syntax"
 #require "core_extended"
 #require "async"
-open Core.Std
+open Core

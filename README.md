@@ -1,23 +1,32 @@
 Core and Async Hello World
 ==========================
 
-A simple hello-world project for Core.  The intent is to show you how
-to get started building OCaml projects using OPAM, Core and
-OCamlbuild.
+A simple hello-world project for using Core and Async.  The intent is
+to show you how to get started building OCaml projects using OPAM,
+Core and jbuilder.
 
-Before getting started with this code, you should follow the
-instructions in the PREREQUISITES.
+We assume that you can install OCaml and opam on your platform.  As of
+now (2017-04-15), you need to use the bleeding edge release of Jane
+Street's libraries to install this package. You can get those working
+as follows:
+
+    $ opam repo add js-bleeding https://ocaml.janestreet.com/opam-repository
+	
+at which point you can use opam to install async, core, and textutils:
+
+    $ opam install async core textutils
 
 Once that's done, you can build all the pieces of this project by
 running:
 
     $ ./build_all.sh
 
-Or you can build any individual executable by running
+Or you can build an individual file by calling out to jbuilder
+directly
 
-    $ ./build.sh hello_world.native
+    $  jbuilder build hello_world.exe
 
-There are three basic examples
+There are three basic examples.
 
 Hello World
 -----------
@@ -25,15 +34,15 @@ Hello World
 This is a very simple exercise that shows you how to make a basic
 command-line application using Core's `Command` module.
 
-This executable is `hello_world.native` (or `hello_world.byte`), and
-here's an example of it in action.
+This executable is `hello_world.exe` (or `hello_world.bc`, for
+bytecode), and here's an example of it in action.
 
-    core-hello-world $ ./hello_world.native
+    core-hello-world $ ./hello_world.exe
     Hello World!
-    core-hello-world $ ./hello_world.native -help
+    core-hello-world $ ./hello_world.exe -help
     Hello World
 
-      hello_world.native
+      hello_world.exe
 
     === flags ===
 
@@ -44,15 +53,15 @@ here's an example of it in action.
       [-help]        print this help text and exit
                      (alias: -?)
 
-    core-hello-world $ ./hello_world.native -hello "Goodbye" -world "Yellow Brick Road"
+    core-hello-world $ ./hello_world.exe -hello "Goodbye" -world "Yellow Brick Road"
     Goodbye Yellow Brick Road!
 
 
 Hello World client/server
 -------------------------
 
-The next example is a pair of programs: `hello_server.native` and
-`hello_client.native`.  The server will accept requests via the
+The next example is a pair of programs: `hello_server.exe` and
+`hello_client.exe`.  The server will accept requests via the
 `Async.Rpc` library, and the client dispatches them.  The RPC is
 trivial: the client sends a string, and the server attaches " World!"
 to the end of it and sends the result back.
@@ -60,9 +69,9 @@ to the end of it and sends the result back.
 Message Broker
 --------------
 
-This is the most complicated example.  `broker_server.native` is a
+This is the most complicated example.  `broker_server.exe` is a
 simple message broker that allows you to publish and subscribe to
-streams of data.  `broker_client.native` is a client that lets you do
+streams of data.  `broker_client.exe` is a client that lets you do
 a few operations, including publishing, subscribing, getting a dump of
 the current state of the server, and shutting the server down.
 
@@ -88,10 +97,9 @@ These are listed in rough dependency order.
 
 Plus, the build scripts:
 
-* `_tags`: which sets up the build options for `ocamlbuild`.
-* `build.sh`: For building any target, invoking `ocamlbuild`.
+* `jbuild`: The Jbuilder build spec file.
 * `build_all.sh`: builds _all_ the executable targets.  Calls out to
-  `build.sh`.
+  `jbuilder`.
 
 
 Setting up the toplevel
