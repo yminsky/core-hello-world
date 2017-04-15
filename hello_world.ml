@@ -1,4 +1,4 @@
-open Core.Std
+open Core
 
 (* A very basic command-line program, using Command, Core's Command line
    parsing library.  *)

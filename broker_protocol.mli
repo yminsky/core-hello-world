@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 module Username : Identifiable
 module Topic : Identifiable
@@ -10,15 +10,15 @@ module Message : sig
              from: Username.t;
              time: Time.t;
            }
-  with sexp, bin_io, compare
+  [@@deriving sexp, bin_io, compare]
 end
 
 module Dump : sig
   type single = { message : Message.t;
                   num_subscribers: int;
                 }
-  with sexp,bin_io, compare
-  type t = single list with sexp,bin_io, compare
+  [@@deriving sexp,bin_io, compare]
+  type t = single list [@@deriving sexp,bin_io, compare]
 end
 
 

@@ -1,21 +1,18 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 open Broker_protocol
 
 (* First, we build the implementations *)
 
 let publish_impl (dir,_) msg =
-  Log.Global.sexp ~level:`Debug msg
-    (Message.sexp_of_t);
+  Log.Global.sexp ~level:`Debug [%sexp (msg : Message.t)];
   return (Directory.publish dir msg)
 
-let subscribe_impl (dir,_) topic ~aborted =
+let subscribe_impl (dir,_) topic =
   return (
     match Directory.subscribe dir topic with
     | None -> Error "Unknown topic"
-    | Some pipe ->
-      don't_wait_for (aborted >>| fun () -> Pipe.close_read pipe);
-      Ok pipe
+    | Some pipe -> Ok pipe
   )
 
 let dump_impl (dir,_) () =
@@ -45,7 +42,7 @@ let implementations =
 (* Finally we create a command for starting the broker server *)
 
 let command =
-  Command.async_basic
+  Command.async
   ~summary:"Start the message broker server"
   Command.Spec.(
     empty
@@ -56,7 +53,7 @@ let command =
     (* We use a blocking call to get the working directory, because the Async
        scheduler isn't running yet.
     *)
-    let basedir = Core.Std.Unix.getcwd () in
+    let basedir = Core.Unix.getcwd () in
     let logfile = basedir ^/ "broker.log" in
     if not fg then
       Daemon.daemonize ()

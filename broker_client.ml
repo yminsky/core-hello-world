@@ -1,14 +1,16 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 open Broker_protocol
-module Ascii_table = Textutils.Std.Ascii_table
+module Ascii_table = Textutils.Ascii_table
 
-let host_and_port () =
+let host_and_port_spec () =
   Command.Spec.(
     empty
     +> Common.host_arg ()
     +> Common.port_arg ()
   )
+
+
 
 (* Shutdown command *****************************************)
 
@@ -17,7 +19,7 @@ let shutdown =
     Rpc.Rpc.dispatch_exn shutdown_rpc conn ())
 
 let shutdown_cmd =
-  Command.async_basic (host_and_port ())
+  Command.async (host_and_port_spec ())
     ~summary:"Shut the broker down"
     (fun host port () -> shutdown ~host ~port)
 
@@ -36,10 +38,10 @@ let publish ~topic ~text =
   )
 
 let pub_cmd =
-  Command.async_basic
+  Command.async
     ~summary:"publish a single value"
     Command.Spec.(
-      (host_and_port ())
+      (host_and_port_spec ())
       +> anon ("<topic>" %: Arg_type.create Topic.of_string)
       +> anon ("<text>" %: string)
     )
@@ -61,10 +63,10 @@ let subscribe ~topic =
       ))
 
 let sub_cmd =
-  Command.async_basic
+  Command.async
     ~summary:"subscribe to a topic"
     Command.Spec.(
-      host_and_port ()
+      host_and_port_spec ()
       +> anon ("<topic>" %: Arg_type.create Topic.of_string)
     )
     (fun host port topic () -> subscribe ~host ~port ~topic)
@@ -80,7 +82,8 @@ let columns =
   [ col "topic" (fun d -> Topic.to_string d.Dump.message.Message.topic)
   ; col "text"  (fun d -> d.Dump.message.Message.text) ~max_width:25
   ; col "#sub"  (fun d -> Int.to_string d.Dump.num_subscribers)
-  ; col "time"  (fun d -> Time.to_sec_string d.Dump.message.Message.time)
+  ; col "time"  (fun d -> 
+        Time.to_sec_string ~zone:(force Time.Zone.local) d.Dump.message.Message.time)
   ]
 
 let table_print_dump dump =
@@ -102,7 +105,7 @@ let dump_cmd =
   Command.async_basic
     ~summary:"Get a full dump of the broker's state"
     Command.Spec.(
-      host_and_port ()
+      host_and_port_spec ()
       +> flag "-sexp" no_arg ~doc:" Show as raw s-expression"
     )
     (fun host port sexp () -> dump ~host ~port ~sexp)
@@ -117,7 +120,7 @@ let clear_cmd =
   Command.async_basic
     ~summary:"Clear out a given topic"
     Command.Spec.(
-      host_and_port ()
+      host_and_port_spec ()
       +> anon ("<topic>" %: Arg_type.create Topic.of_string)
     )
     (fun host port topic () -> clear topic ~host ~port)

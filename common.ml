@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 let port_arg () =
   Command.Spec.(
@@ -18,7 +18,7 @@ let with_rpc_conn f ~host ~port =
     (Tcp.to_host_and_port host port)
     ~timeout:(sec 1.)
     (fun _ r w ->
-      Rpc.Connection.create r w ~connection_state:()
+      Rpc.Connection.create r w ~connection_state:(fun _ -> ())
       >>= function
       | Error exn -> raise exn
       | Ok conn   -> f conn
@@ -28,17 +28,19 @@ let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
   Log.Global.info "Starting server on %d" port;
   let implementations =
     Rpc.Implementations.create_exn ~implementations
-      ~on_unknown_rpc:(`Call (fun ~rpc_tag ~version ->
-        Log.Global.info "Unexpected RPC, tag %s, version %d" rpc_tag version))
+      ~on_unknown_rpc:(`Call (fun _ ~rpc_tag ~version ->
+          Log.Global.info "Unexpected RPC, tag %s, version %d" rpc_tag version;
+          `Continue
+        ))
   in
   Tcp.Server.create
-    ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp exn Exn.sexp_of_t))
+    ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp [%sexp (exn : Exn.t)]))
     (Tcp.on_port port)
     (fun _addr r w ->
       Rpc.Connection.server_with_close r w
-        ~connection_state:env
+        ~connection_state:(fun _ -> env)
         ~on_handshake_error:(
-          `Call (fun exn -> Log.Global.sexp exn Exn.sexp_of_t; return ()))
+          `Call (fun exn -> Log.Global.sexp [%sexp (exn : Exn.t)]; return ()))
         ~implementations
     )
   >>= fun server ->

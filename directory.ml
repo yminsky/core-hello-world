@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 open Broker_protocol
 
 (* A publisher for a single topic *)
@@ -16,7 +16,7 @@ end = struct
   type t = { mutable last_message: Message.t;
              mutable subscribers: Message.t Pipe.Writer.t list;
            }
-  with fields
+  [@@deriving fields]
 
   let create last_message =
     { last_message; subscribers = [] }
