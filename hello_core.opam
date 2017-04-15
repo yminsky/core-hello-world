@@ -1,0 +1,16 @@
+opam-version: "0.1"
+maintainer: "yminsky@gmail.com"
+authors: ["Yaron M Minsky <yminsky@gmail.com>"]
+homepage: "https://bitbucket.com/yminsky/core-hello-world"
+license: "MIT"
+build: [
+  ["jbuilder" "build" "--only-packages" "iron" "--root" "." "-j" jobs "@install"]
+]
+depends: [
+  "async"
+  "jbuilder"
+  "core"
+  "textutils"
+]
+available: [ ocaml-version >= "4.03.0" ]
+descr: "Simple example of how to use Core and Async"
