@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 module Username : Identifiable = String
 module Topic    : Identifiable = String
@@ -10,15 +10,15 @@ module Message = struct
              from: Username.t;
              time: Time.t;
            }
-  with sexp, bin_io, compare
+  [@@deriving sexp, bin_io, compare]
 end
 
 module Dump = struct
   type single = { message : Message.t;
                   num_subscribers: int;
                 }
-  with sexp,bin_io, compare
-  type t = single list with sexp,bin_io, compare
+  [@@deriving sexp,bin_io, compare]
+  type t = single list [@@deriving sexp, bin_io, compare]
 end
 
 let publish_rpc =
@@ -29,7 +29,7 @@ let publish_rpc =
     ~bin_response:Unit.bin_t
 
 let subscribe_rpc =
-  Rpc.Pipe_rpc.create
+  Rpc.Pipe_rpc.create ()
     ~name:"subscribe"
     ~version:0
     ~bin_query:Topic.bin_t

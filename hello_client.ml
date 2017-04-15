@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 (* A command that sends the hello request  *)
 let say_hello ~host ~port =
@@ -8,10 +8,10 @@ let say_hello ~host ~port =
     >>| fun response ->
     printf "%s\n%!" response
   )
-    ~host ~port
+  ~host ~port
 
 let command =
-  Command.async_basic
+  Command.async
     ~summary:"Hello World client"
     Command.Spec.(
       empty

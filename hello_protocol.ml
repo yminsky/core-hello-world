@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 (** The protocol for communicating between the hello client and server.
     There's a single RPC call exposed, which lets you send and receive a
