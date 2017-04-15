@@ -2,7 +2,7 @@
 
 EXT=exe
 
-jbuilder build \
+jbuilder build --dev \
     hello_world.$EXT \
     hello_client.$EXT \
     hello_server.$EXT \

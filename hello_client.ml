@@ -1,5 +1,5 @@
-open Core
-open Async
+open! Core
+open! Async
 
 (* A command that sends the hello request  *)
 let say_hello ~host ~port =

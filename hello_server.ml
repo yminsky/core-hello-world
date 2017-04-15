@@ -1,5 +1,5 @@
-open Core.Std
-open Async.Std
+open Core
+open Async
 
 (* The implementation of the "hello" RPC.  The first argument is the environment
    the query executes against, which in this case is trivial.
@@ -20,7 +20,7 @@ let implementations =
 (* The command-line interface.  We use [async_basic] so that the command starts
    the async scheduler, and exits when the server stops.  *)
 let command =
-  Command.async_basic
+  Command.async
     ~summary:"Hello World server"
     Command.Spec.(
       empty +> Common.port_arg ()
