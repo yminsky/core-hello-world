@@ -1,10 +1,11 @@
-opam-version: "0.1"
+opam-version: "1.2"
+version: "0.1"
 maintainer: "yminsky@gmail.com"
 authors: ["Yaron M Minsky <yminsky@gmail.com>"]
 homepage: "https://bitbucket.com/yminsky/core-hello-world"
 license: "MIT"
 build: [
-  ["jbuilder" "build" "--only-packages" "iron" "--root" "." "-j" jobs "@install"]
+  ["jbuilder" "build" "--only-packages" "hello_core" "--root" "." "-j" jobs "@install"]
 ]
 depends: [
   "async"

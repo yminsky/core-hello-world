@@ -20,9 +20,9 @@
 (install
  ((section bin)
   (files 
-   ((hello_world.exe as hello_world)
-    (hello_client.exe as hello_client)
-    (hello_server.exe as hello_server)
-    (broker_server.exe as broker_server)
-    (broker_client.exe as broker_client)
+   ((hello_world.exe as core_hello_world)
+    (hello_client.exe as core_hello_client)
+    (hello_server.exe as core_hello_server)
+    (broker_server.exe as core_hello_broker_server)
+    (broker_client.exe as core_hello_broker_client)
     ))))
