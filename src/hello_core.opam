@@ -4,6 +4,8 @@ maintainer: "yminsky@gmail.com"
 authors: ["Yaron M Minsky <yminsky@gmail.com>"]
 homepage: "https://bitbucket.com/yminsky/core-hello-world"
 license: "MIT"
+dev-repo: "hg+https://bitbucket.com/yminsky/core-hello-world"
+bug-reports: "https://bitbucket.org/yminsky/core-hello-world/issues"
 build: [
   ["jbuilder" "build" "--only-packages" "hello_core" "--root" "." "-j" jobs "@install"]
 ]
