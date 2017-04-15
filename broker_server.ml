@@ -43,35 +43,35 @@ let implementations =
 
 let command =
   Command.async
-  ~summary:"Start the message broker server"
-  Command.Spec.(
-    empty
-    +> Common.port_arg ()
-    +> flag "-fg" no_arg ~doc:" Run in the foreground (daemonize is the default)"
-  )
-  (fun port fg () ->
-    (* We use a blocking call to get the working directory, because the Async
-       scheduler isn't running yet.
-    *)
-    let basedir = Core.Unix.getcwd () in
-    let logfile = basedir ^/ "broker.log" in
-    if not fg then
-      Daemon.daemonize ()
-        ~redirect_stdout:(`File_append logfile)
-        ~redirect_stderr:(`File_append logfile)
-        ~cd:basedir;
-    Log.Global.set_output
-      [ Log.Output.file `Text ~filename:logfile ];
-    Log.Global.info "Starting up";
-    let stop = Ivar.create () in
-    let directory = Directory.create () in
-    Common.start_server ()
-      ~stop:(Ivar.read stop)
-      ~port
-      ~implementations
-      ~env:(directory,stop)
-    >>| fun () ->
-    Log.Global.info "Shutting down"
-  )
+    ~summary:"Start the message broker server"
+    Command.Spec.(
+      empty
+      +> Common.port_arg ()
+      +> flag "-fg" no_arg ~doc:" Run in the foreground (daemonize is the default)"
+    )
+    (fun port fg () ->
+       (* We use a blocking call to get the working directory, because the Async
+          scheduler isn't running yet.
+       *)
+       let basedir = Core.Unix.getcwd () in
+       let logfile = basedir ^/ "broker.log" in
+       if not fg then
+         Daemon.daemonize ()
+           ~redirect_stdout:(`File_append logfile)
+           ~redirect_stderr:(`File_append logfile)
+           ~cd:basedir;
+       Log.Global.set_output
+         [ Log.Output.file `Text ~filename:logfile ];
+       Log.Global.info "Starting up";
+       let stop = Ivar.create () in
+       let directory = Directory.create () in
+       Common.start_server ()
+         ~stop:(Ivar.read stop)
+         ~port
+         ~implementations
+         ~env:(directory,stop)
+       >>| fun () ->
+       Log.Global.info "Shutting down"
+    )
 
 let () = Command.run command

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-EXT=native
+EXT=exe
 
-corebuild \
-    -j 4 \
-    -pkg async,textutils  \
+jbuilder build \
     hello_world.$EXT \
     hello_client.$EXT \
     hello_server.$EXT \
