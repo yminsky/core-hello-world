@@ -4,8 +4,9 @@ Core and Async Hello World
 A simple hello-world project for using Core and Async.  The intent is
 to show you how to get started building OCaml projects using
 [opam](http://opam.ocaml.org),
-[Core](https://github.com/janestreet/core) and
-[jbuilder](https://github.com/janestreet/jbuilder).
+[core](https://github.com/janestreet/core), 
+[async](https://github.com/janestreet/async),
+and [jbuilder](https://github.com/janestreet/jbuilder).
 
 We assume that you can install OCaml and opam on your platform.  As of
 now (2017-04-15), you need to use the bleeding edge release of Jane
