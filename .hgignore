@@ -5,4 +5,5 @@ _build
 *.cmo
 *.native
 *.byte
+*.install
 *~
