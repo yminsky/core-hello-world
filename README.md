@@ -16,6 +16,16 @@ at which point you can use opam to install async, core, and textutils:
 
     $ opam install async core textutils
 
+If you're using Merlin, you also might want to pin to the latest
+version:
+
+    $ opam pin add merlin --dev-repo
+
+And you should consider installing the `user-setup` package to set up
+your editor configs to use Merlin properly. This will give you
+interactive feedback on compilation failures, type-throwback and
+auto-completion.
+
 Once that's done, you can build all the pieces of this project by
 running:
 
