@@ -102,7 +102,7 @@ let dump ~sexp =
   )
 
 let dump_cmd =
-  Command.async_basic
+  Command.async
     ~summary:"Get a full dump of the broker's state"
     Command.Spec.(
       host_and_port_spec ()
@@ -117,7 +117,7 @@ let clear topic =
     Rpc.Rpc.dispatch_exn clear_rpc conn topic)
 
 let clear_cmd =
-  Command.async_basic
+  Command.async
     ~summary:"Clear out a given topic"
     Command.Spec.(
       host_and_port_spec ()

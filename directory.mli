@@ -1,6 +1,6 @@
-open Core
 (** A directory for storing last-values for a basic pub/sub system *)
 
+open! Core
 open Async
 open Broker_protocol
 

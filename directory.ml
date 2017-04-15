@@ -16,7 +16,8 @@ end = struct
   type t = { mutable last_message: Message.t;
              mutable subscribers: Message.t Pipe.Writer.t list;
            }
-  [@@deriving fields]
+
+  let last_message t = t.last_message
 
   let create last_message =
     { last_message; subscribers = [] }
