@@ -1,17 +1,23 @@
 open Core
 open Async
 
-let port_arg () =
-  Command.Spec.(
-    flag "-port" (optional_with_default 8124 int)
-      ~doc:" Broker's port"
-  )
+let port =
+  let open Command.Let_syntax in
+  let%map_open port = 
+    flag "-port" (optional_with_default 8124 int) ~doc:" Broker's port" 
+  in
+  port
 
-let host_arg () =
-  Command.Spec.(
-    flag "-hostname" (optional_with_default "127.0.0.1" string)
-      ~doc:" Broker's hostname"
-  )
+
+let host_port_pair =
+  let open Command.Let_syntax in
+  [%map_open
+    let port = port
+    and host = flag "-hostname" (optional_with_default "127.0.0.1" string)
+        ~doc:" Broker's hostname"
+    in
+    (host,port)
+  ]
 
 let with_rpc_conn f ~host ~port =
   Tcp.with_connection

@@ -3,15 +3,6 @@ open Async
 open Broker_protocol
 module Ascii_table = Textutils.Ascii_table
 
-let host_and_port_spec () =
-  Command.Spec.(
-    empty
-    +> Common.host_arg ()
-    +> Common.port_arg ()
-  )
-
-
-
 (* Shutdown command *****************************************)
 
 let shutdown =
@@ -19,9 +10,10 @@ let shutdown =
     Rpc.Rpc.dispatch_exn shutdown_rpc conn ())
 
 let shutdown_cmd =
-  Command.async (host_and_port_spec ())
-    ~summary:"Shut the broker down"
-    (fun host port () -> shutdown ~host ~port)
+  Command.async' ~summary:"Shut the broker down"
+    Command.Let_syntax.(
+      let%map_open (host,port) = Common.host_port_pair in
+      fun () ->  shutdown ~host ~port)
 
 (* Publish command ******************************************)
 
@@ -33,19 +25,20 @@ let publish ~topic ~text =
       |> Username.of_string
     in
     Rpc.Rpc.dispatch_exn publish_rpc conn
-      { Message.
-        text; topic; from; time = Time.now () }
+      { text; topic; from; time = Time.now () }
   )
 
 let pub_cmd =
-  Command.async
-    ~summary:"publish a single value"
-    Command.Spec.(
-      (host_and_port_spec ())
-      +> anon ("<topic>" %: Arg_type.create Topic.of_string)
-      +> anon ("<text>" %: string)
-    )
-    (fun host port topic text () -> publish ~host ~port ~topic ~text)
+  Command.async' ~summary:"publish a single value"
+    Command.Let_syntax.(
+      [%map_open
+        let (host,port) = Common.host_port_pair
+        and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
+        and text = anon ("<text>" %: string)
+        in
+        fun () -> 
+          publish ~host ~port ~topic ~text
+      ])
 
 (* Subscribe command ****************************************)
 
@@ -62,13 +55,14 @@ let subscribe ~topic =
       ))
 
 let sub_cmd =
-  Command.async
-    ~summary:"subscribe to a topic"
-    Command.Spec.(
-      host_and_port_spec ()
-      +> anon ("<topic>" %: Arg_type.create Topic.of_string)
-    )
-    (fun host port topic () -> subscribe ~host ~port ~topic)
+  Command.async' ~summary:"subscribe to a topic"
+    Command.Let_syntax.(
+      [%map_open
+        let (host,port) = Common.host_port_pair
+        and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
+        in
+        fun () -> subscribe ~host ~port ~topic
+      ])
 
 (* Dump command *********************************************)
 
@@ -100,13 +94,15 @@ let dump ~sexp =
   )
 
 let dump_cmd =
-  Command.async
+  Command.async'
     ~summary:"Get a full dump of the broker's state"
-    Command.Spec.(
-      host_and_port_spec ()
-      +> flag "-sexp" no_arg ~doc:" Show as raw s-expression"
-    )
-    (fun host port sexp () -> dump ~host ~port ~sexp)
+    Command.Let_syntax.(
+      [%map_open
+        let (host,port) = Common.host_port_pair
+        and sexp =  flag "-sexp" no_arg ~doc:" Show as raw s-expression"
+        in
+        fun () -> dump ~host ~port ~sexp
+      ])
 
 (* Clear command ********************************************)
 
@@ -115,13 +111,14 @@ let clear topic =
     Rpc.Rpc.dispatch_exn clear_rpc conn topic)
 
 let clear_cmd =
-  Command.async
-    ~summary:"Clear out a given topic"
-    Command.Spec.(
-      host_and_port_spec ()
-      +> anon ("<topic>" %: Arg_type.create Topic.of_string)
-    )
-    (fun host port topic () -> clear topic ~host ~port)
+  Command.async' ~summary:"Clear out a given topic"
+    Command.Let_syntax.(
+      [%map_open
+        let (host,port) = Common.host_port_pair
+        and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
+        in
+        fun () -> clear topic ~host ~port
+      ])
 
 (* Execution of final command *******************************)
 
