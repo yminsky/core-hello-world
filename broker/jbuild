@@ -4,10 +4,7 @@
 
 (executables 
  ((names
-   (hello_world
-    hello_client
-    hello_server
-    broker_server
+   (broker_server
     broker_client
     ))
   (libraries (core async textutils))
@@ -20,9 +17,6 @@
 (install
  ((section bin)
   (files 
-   ((hello_world.exe as core_hello_world)
-    (hello_client.exe as core_hello_client)
-    (hello_server.exe as core_hello_server)
-    (broker_server.exe as core_hello_broker_server)
+   ((broker_server.exe as core_hello_broker_server)
     (broker_client.exe as core_hello_broker_client)
     ))))
