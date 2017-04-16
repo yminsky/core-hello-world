@@ -1,0 +1,22 @@
+;; -*- scheme -*-
+
+(jbuild_version 1)
+
+(executables 
+ ((names
+   (hello_client
+    hello_server
+    ))
+  (libraries (core async textutils))
+  ;; lets you use the standard set of PPXs for Jane Street's codebase.
+  (preprocess (pps (ppx_jane ppx_driver.runner)))	
+  ;; not necessary, but makes for better error messages.
+  (flags (:standard -short-paths)) 
+  ))
+
+(install
+ ((section bin)
+  (files 
+   ((hello_client.exe as core_hello_client)
+    (hello_server.exe as core_hello_server)
+    ))))
