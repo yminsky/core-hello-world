@@ -88,32 +88,6 @@ streams of data.  `broker_client.exe` is a client that lets you do
 a few operations, including publishing, subscribing, getting a dump of
 the current state of the server, and shutting the server down.
 
-Guide to the files
-------------------
-
-These are files in `src` listed in rough dependency order.
-
-* `hello_world.ml`: Command-line tool that prints "Hello World!"
-* `common.ml`: Some common utilities for setting up Async-RPC clients
-  and servers
-* `hello_protocol.ml`: Async-RPC protocol for communicating between
-  the hello client and server.
-* `hello_server.ml`: Async-RPC server for answering "hello" query
-* `hello_client.ml`: Async-RPC client fro sending "hello" query
-* `directory.ml`: Core datastructur of the Async message broker
-* `broker_protocol.ml`: Async-RPC protocol for communicating between
-  the broker client and server.
-* `broker_server.ml`: Async-RPC server that handles message broker
-  requests.  Backed by the Directory.
-* `broker_client.ml`: Async-RPC client that can publish, subscribe,
-  get a dump of the state of the broker, and shut the broker down.
-
-Plus, the build scripts:
-
-* `jbuild`: The Jbuilder build spec file.
-* `build.sh`: builds all the executable targets, via `jbuilder`.
-
-
 Setting up the toplevel
 -----------------------
 
