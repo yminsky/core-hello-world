@@ -8,14 +8,8 @@ to show you how to get started building OCaml projects using
 [async](https://github.com/janestreet/async),
 and [jbuilder](https://github.com/janestreet/jbuilder).
 
-We assume that you can install OCaml and opam on your platform.  As of
-now (2017-04-15), you need to use the bleeding edge release of Jane
-Street's libraries to install this package. You can get those working
-as follows:
-
-    $ opam repo add js-bleeding https://ocaml.janestreet.com/opam-repository
-	
-at which point you can use opam to install async, core, and textutils:
+We assume that you can install OCaml and opam on your platform. You'll
+need to install async, core, and textutils:
 
     $ opam install async core textutils
 
