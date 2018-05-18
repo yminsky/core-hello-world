@@ -3,8 +3,8 @@ open Async
 
 let port =
   let open Command.Let_syntax in
-  let%map_open port = 
-    flag "-port" (optional_with_default 8124 int) ~doc:" Broker's port" 
+  let%map_open port =
+    flag "-port" (optional_with_default 8124 int) ~doc:" Broker's port"
   in
   port
 
@@ -21,7 +21,8 @@ let host_port_pair =
 
 let with_rpc_conn f ~host ~port =
   Tcp.with_connection
-    (Tcp.to_host_and_port host port)
+    (Tcp.Where_to_connect.of_host_and_port
+       (Host_and_port.create ~host ~port))
     ~timeout:(sec 1.)
     (fun _ r w ->
        match%bind Rpc.Connection.create r w ~connection_state:(fun _ -> ()) with
@@ -38,10 +39,10 @@ let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
           `Continue
         ))
   in
-  let%bind server = 
+  let%bind server =
     Tcp.Server.create
       ~on_handler_error:(`Call (fun _ exn -> Log.Global.sexp [%sexp (exn : Exn.t)]))
-      (Tcp.on_port port)
+      (Tcp.Where_to_listen.of_port port)
       (fun _addr r w ->
          Rpc.Connection.server_with_close r w
            ~connection_state:(fun _ -> env)

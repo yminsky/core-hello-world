@@ -6,7 +6,7 @@ open Core
 let command =
   (* [Command.basic] is used for creating a command.  Every command takes a text
      summary and a command line spec *)
-  Command.basic' ~summary:"Hello World"
+  Command.basic ~summary:"Hello World"
     (* Command line specs are built up component by component, using a small
        combinator library whose operators are contained in [Command.Spec] *)
     Command.Let_syntax.(

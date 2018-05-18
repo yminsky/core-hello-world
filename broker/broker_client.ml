@@ -10,7 +10,7 @@ let shutdown =
     Rpc.Rpc.dispatch_exn shutdown_rpc conn ())
 
 let shutdown_cmd =
-  Command.async' ~summary:"Shut the broker down"
+  Command.async ~summary:"Shut the broker down"
     Command.Let_syntax.(
       let%map_open (host,port) = Common.host_port_pair in
       fun () ->  shutdown ~host ~port)
@@ -29,14 +29,14 @@ let publish ~topic ~text =
   )
 
 let pub_cmd =
-  Command.async' ~summary:"publish a single value"
+  Command.async ~summary:"publish a single value"
     Command.Let_syntax.(
       [%map_open
         let (host,port) = Common.host_port_pair
         and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
         and text = anon ("<text>" %: string)
         in
-        fun () -> 
+        fun () ->
           publish ~host ~port ~topic ~text
       ])
 
@@ -55,7 +55,7 @@ let subscribe ~topic =
       ))
 
 let sub_cmd =
-  Command.async' ~summary:"subscribe to a topic"
+  Command.async ~summary:"subscribe to a topic"
     Command.Let_syntax.(
       [%map_open
         let (host,port) = Common.host_port_pair
@@ -75,7 +75,7 @@ let columns =
   [ col "topic" (fun d -> Topic.to_string d.Dump.message.Message.topic)
   ; col "text"  (fun d -> d.Dump.message.Message.text) ~max_width:25
   ; col "#sub"  (fun d -> Int.to_string d.Dump.num_subscribers)
-  ; col "time"  (fun d -> 
+  ; col "time"  (fun d ->
         Time.to_sec_string ~zone:(force Time.Zone.local) d.Dump.message.Message.time)
   ]
 
@@ -94,7 +94,7 @@ let dump ~sexp =
   )
 
 let dump_cmd =
-  Command.async'
+  Command.async
     ~summary:"Get a full dump of the broker's state"
     Command.Let_syntax.(
       [%map_open
@@ -111,17 +111,15 @@ let clear topic =
     Rpc.Rpc.dispatch_exn clear_rpc conn topic)
 
 let clear_cmd =
-  Command.async' ~summary:"Clear out a given topic"
+  Command.async ~summary:"Clear out a given topic"
     Command.Let_syntax.(
-      [%map_open
-        let (host,port) = Common.host_port_pair
+        let%map_open
+          (host,port) = Common.host_port_pair
         and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
         in
-        fun () -> clear topic ~host ~port
-      ])
+        fun () -> clear topic ~host ~port)
 
 (* Execution of final command *******************************)
-
 
 let () =
   Command.run

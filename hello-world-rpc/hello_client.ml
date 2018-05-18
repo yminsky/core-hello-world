@@ -9,9 +9,9 @@ let say_hello ~host ~port =
     ~host ~port
 
 let command =
-  Command.async'
+  Command.async
     ~summary:"Hello World client"
-    Command.Let_syntax.( 
+    Command.Let_syntax.(
       [%map_open
         let (host,port) = Common.host_port_pair in
         fun () -> say_hello ~port ~host
