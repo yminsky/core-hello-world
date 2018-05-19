@@ -13,8 +13,8 @@ module Topic_pub : sig
   val last_message           : t -> Message.t
   val close_subscriber_pipes : t -> unit
 end = struct
-  type t = { mutable last_message: Message.t;
-             mutable subscribers: Message.t Pipe.Writer.t list;
+  type t = { mutable last_message: Message.t
+           ; mutable subscribers: Message.t Pipe.Writer.t list
            }
 
   let last_message t = t.last_message
@@ -53,7 +53,7 @@ let create () = Topic.Table.create ()
 let clear_topic t topic =
   match Hashtbl.find t topic with
   | None -> ()
-  | Some s -> 
+  | Some s ->
     Topic_pub.close_subscriber_pipes s;
     Hashtbl.remove t topic
 
@@ -73,4 +73,3 @@ let dump t =
     let num_subscribers = Topic_pub.num_subscribers tpub in
     let message = Topic_pub.last_message tpub in
     {Dump. num_subscribers; message })
-

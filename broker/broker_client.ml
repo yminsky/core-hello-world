@@ -31,14 +31,11 @@ let publish ~topic ~text =
 let pub_cmd =
   Command.async ~summary:"publish a single value"
     Command.Let_syntax.(
-      [%map_open
-        let (host,port) = Common.host_port_pair
-        and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
-        and text = anon ("<text>" %: string)
-        in
-        fun () ->
-          publish ~host ~port ~topic ~text
-      ])
+      let%map_open (host,port) = Common.host_port_pair
+      and topic = anon ("<topic>" %: Arg_type.create Topic.of_string)
+      and text = anon ("<text>" %: string)
+      in
+      fun () -> publish ~host ~port ~topic ~text)
 
 (* Subscribe command ****************************************)
 
@@ -97,12 +94,10 @@ let dump_cmd =
   Command.async
     ~summary:"Get a full dump of the broker's state"
     Command.Let_syntax.(
-      [%map_open
-        let (host,port) = Common.host_port_pair
-        and sexp =  flag "-sexp" no_arg ~doc:" Show as raw s-expression"
-        in
-        fun () -> dump ~host ~port ~sexp
-      ])
+      let%map_open (host,port) = Common.host_port_pair
+      and sexp =  flag "-sexp" no_arg ~doc:" Show as raw s-expression"
+      in
+      fun () -> dump ~host ~port ~sexp)
 
 (* Clear command ********************************************)
 

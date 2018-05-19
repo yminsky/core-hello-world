@@ -10,13 +10,12 @@ let port =
 
 let host_port_pair =
   let open Command.Let_syntax in
-  [%map_open
-    let port = port
-    and host = flag "-hostname" (optional_with_default "127.0.0.1" string)
-        ~doc:" Broker's hostname"
-    in
-    (host,port)
-  ]
+  let%map_open
+    port = port
+  and host = flag "-hostname" (optional_with_default "127.0.0.1" string)
+      ~doc:" Broker's hostname"
+  in
+  (host,port)
 
 let with_rpc_conn f ~host ~port =
   Tcp.with_connection

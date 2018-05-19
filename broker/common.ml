@@ -8,16 +8,13 @@ let port =
   in
   port
 
-
 let host_port_pair =
   let open Command.Let_syntax in
-  [%map_open
-    let port = port
-    and host = flag "-hostname" (optional_with_default "127.0.0.1" string)
-        ~doc:" Broker's hostname"
-    in
-    (host,port)
-  ]
+  let%map_open port = port
+  and host = flag "-hostname" (optional_with_default "127.0.0.1" string)
+      ~doc:" Broker's hostname"
+  in
+  (host,port)
 
 let with_rpc_conn f ~host ~port =
   Tcp.with_connection
@@ -27,8 +24,7 @@ let with_rpc_conn f ~host ~port =
     (fun _ r w ->
        match%bind Rpc.Connection.create r w ~connection_state:(fun _ -> ()) with
        | Error exn -> raise exn
-       | Ok conn   -> f conn
-    )
+       | Ok conn   -> f conn)
 
 let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
   Log.Global.info "Starting server on %d" port;
@@ -36,8 +32,7 @@ let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
     Rpc.Implementations.create_exn ~implementations
       ~on_unknown_rpc:(`Call (fun _ ~rpc_tag ~version ->
           Log.Global.info "Unexpected RPC, tag %s, version %d" rpc_tag version;
-          `Continue
-        ))
+          `Continue))
   in
   let%bind server =
     Tcp.Server.create
@@ -48,10 +43,9 @@ let start_server ~env ?(stop=Deferred.never ()) ~implementations ~port () =
            ~connection_state:(fun _ -> env)
            ~on_handshake_error:(
              `Call (fun exn -> Log.Global.sexp [%sexp (exn : Exn.t)]; return ()))
-           ~implementations
-      )
+           ~implementations)
   in
   Log.Global.info "Server started, waiting for close";
   Deferred.any
-    [ (stop >>= fun () -> Tcp.Server.close server)
+    [ (let%bind () = stop in Tcp.Server.close server)
     ; Tcp.Server.close_finished server ]
